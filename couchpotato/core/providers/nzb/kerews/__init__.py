@@ -9,7 +9,8 @@ config = [{
     'groups': [
         {
             'tab': 'searcher',
-            'subtab': 'nzb_providers',
+            'subtab': 'providers',
+            'list': 'nzb_providers',
             'name': 'kere.ws',
             'description': 'Free provider. See  <a href="http://kere.ws/" target="_blank">Kere.ws</a>',
             'wizard': True,
