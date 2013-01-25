@@ -242,13 +242,20 @@ class YarrProvider(Provider):
 
     def getCatId(self, identifier):
 
-        for cats in self.cat_ids:
+        if dict == type(self.cat_ids):
+            cat_ids = self.cat_ids[Env.setting('dl_language', section='core')]
+        else:
+            cat_ids = self.cat_ids
+        for cats in cat_ids:
             ids, qualities = cats
             if identifier in qualities:
                 return ids
 
         if self.cat_backup_id:
-            return [self.cat_backup_id]
+            if dict == type(self.cat_backup_id):
+                return [self.cat_backup_id[Env.setting('dl_language', section='core')]]
+            else:
+                return [self.cat_backup_id]
 
         return []
 
