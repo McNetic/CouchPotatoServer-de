@@ -26,6 +26,9 @@ class OMDBAPI(MovieProvider):
 
     def search(self, q, limit = 12):
 
+        if self.isSearchDisabled():
+            return []
+
         name_year = fireEvent('scanner.name_year', q, single = True)
 
         if not name_year or (name_year and not name_year.get('name')):
@@ -47,6 +50,9 @@ class OMDBAPI(MovieProvider):
         return []
 
     def getInfo(self, identifier = None, **kwargs):
+
+        if self.isInfoDisabled():
+            return {}
 
         if not identifier:
             return {}

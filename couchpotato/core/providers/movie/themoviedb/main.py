@@ -27,7 +27,7 @@ class TheMovieDb(MovieProvider):
     def byHash(self, file):
         ''' Find movie by hash '''
 
-        if self.isDisabled():
+        if self.isSearchDisabled():
             return False
 
         cache_key = 'tmdb.cache.%s' % simplifyString(file)
@@ -58,7 +58,7 @@ class TheMovieDb(MovieProvider):
     def search(self, q, limit = 12):
         ''' Find movie by name '''
 
-        if self.isDisabled():
+        if self.isSearchDisabled():
             return False
 
         search_string = simplifyString(q)
@@ -98,6 +98,9 @@ class TheMovieDb(MovieProvider):
 
     def getInfo(self, identifier = None):
 
+        if self.isInfoDisabled():
+            return {}
+
         if not identifier:
             return {}
 
@@ -121,6 +124,9 @@ class TheMovieDb(MovieProvider):
         return result
 
     def getInfoByTMDBId(self, id = None):
+
+        if self.isInfoDisabled():
+            return {}
 
         cache_key = 'tmdb.cache.%s' % id
         result = self.getCache(cache_key)
