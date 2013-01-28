@@ -34,7 +34,7 @@ class Newznab(NZBProvider, RSS):
             ([2060], ['3d']),
         ],
         'de' : [
-            ([2010], ['cam', 'ts', 'tc', 'r5', 'scr', 'dvdr', 'dvdrip', '720p', '1080p', 'brrip', '3d']
+            ([2010], ['cam', 'ts', 'tc', 'r5', 'scr', 'dvdr', 'dvdrip', '720p', '1080p', 'brrip', '3d']),
         ]
     }
     cat_backup_id = {'en' : 2000, 'de' : 2000}
