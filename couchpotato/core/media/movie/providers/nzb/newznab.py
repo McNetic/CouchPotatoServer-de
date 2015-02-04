@@ -11,6 +11,21 @@ autoload = 'Newznab'
 
 class Newznab(MovieProvider, Base):
 
+    cat_ids = {
+        'en' : [
+            ([2020], ['cam', 'ts', 'tc', 'r5', 'scr']),
+            ([2030], ['dvdr', 'dvdrip']),
+            ([2040], ['720p', '1080p', 'brrip']),
+            ([2050], ['brrip']),
+            ([2060], ['3d']),
+        ],
+        'de' : [
+            ([2010], ['cam', 'ts', 'tc', 'r5', 'scr', 'dvdr', 'dvdrip', '720p', '1080p', 'brrip', '3d']),
+        ],
+    }
+    cat_backup_id = {'en' : 2000, 'de' : 2000}
+
+
     def buildUrl(self, media, host):
 
         query = tryUrlencode({
