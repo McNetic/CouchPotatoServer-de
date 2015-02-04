@@ -7,6 +7,7 @@ from couchpotato.core.event import addEvent, fireEvent
 from couchpotato.core.helpers.encoding import toUnicode, ss, tryUrlencode
 from couchpotato.core.helpers.variable import tryInt, splitString
 from couchpotato.core.logger import CPLog
+from couchpotato.environment import Env
 from couchpotato.core.media.movie.providers.base import MovieProvider
 from couchpotato.environment import Env
 
@@ -18,6 +19,7 @@ autoload = 'TheMovieDb'
 class TheMovieDb(MovieProvider):
 
     http_time_between_calls = .35
+    language = 'en'
 
     configuration = {
         'images': {
@@ -37,6 +39,7 @@ class TheMovieDb(MovieProvider):
         addEvent('movie.info', self.getInfo, priority = 3)
         addEvent('movie.info_by_tmdb', self.getInfo)
         addEvent('app.load', self.config)
+        self.language = Env.setting('dl_language')
 
     def config(self):
 
@@ -242,11 +245,30 @@ class TheMovieDb(MovieProvider):
         params = tryUrlencode(params)
 
         try:
-            url = 'https://api.themoviedb.org/3/%s?api_key=%s%s' % (call, self.getApiKey(), '&%s' % params if params else '')
+            url = 'https://api.themoviedb.org/3/%s?api_key=%s&language=%s%s' % (call, self.getApiKey(), self.language, '&%s' % params if params else '')
             data = self.getJsonData(url, show_error = False)
         except:
             log.debug('Movie not found: %s, %s', (call, params))
             data = None
+        if 'en' != self.language:
+            lang_fallback = False
+            if return_key:
+                if None == data.get(return_key):
+                    lang_fallback = True
+            else:
+                for key, value in data.items():
+                    if None == value:
+                        lang_fallback = True
+                        break
+            if lang_fallback:
+                try:
+                    url = 'http://api.themoviedb.org/3/%s?api_key=%s&language=%s%s' % (call, self.conf('api_key'), 'en', '&%s' % params if params else '')
+                    fallback_data = self.getJsonData(url, show_error = False)
+                    for key, value in data.items():
+                      if None == value:
+                          data.set(key, fallback_data.get(key))
+                except:
+                    pass
 
         if data and return_key and return_key in data:
             data = data.get(return_key)

@@ -118,6 +118,7 @@ class YarrProvider(Provider):
     protocol = None  # nzb, torrent, torrent_magnet
 
     cat_ids = {}
+    localized_cats = False
     cat_backup_id = None
 
     size_gb = ['gb', 'gib']
@@ -281,11 +282,17 @@ class YarrProvider(Provider):
         if quality.get('custom'):
             want_3d = quality['custom'].get('3d')
 
-        for ids, qualities in self.cat_ids:
+        if self.localized_cats:
+            cat_ids = self.cat_ids[Env.setting('dl_language', section='core')]
+        else:
+            cat_ids = self.cat_ids
+        for ids, qualities in cat_ids:
             if identifier in qualities or (want_3d and '3d' in qualities):
                 return ids
 
         if self.cat_backup_id:
+            if self.localized_cats:
+                return [self.cat_backup_id[Env.setting('dl_language', section='core')]]
             return [self.cat_backup_id]
 
         return []

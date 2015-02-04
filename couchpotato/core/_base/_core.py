@@ -292,6 +292,15 @@ config = [{
                     'description': 'For people with sensitive skin',
                     'wizard': True,
                 },
+                {
+                    'name': 'dl_language',
+                    'label': 'Download language',
+                    'description': 'Language of metadata and media to be downloaded (only partially implemented, currently has to be accompanied by required words and ignored words)',
+                    'default': 'en',
+                    'type': 'dropdown',
+                    'values': [('english', 'en'), ('german', 'de')],
+                    'wizard': True,
+                },
             ],
         },
         {
