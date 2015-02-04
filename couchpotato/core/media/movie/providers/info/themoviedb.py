@@ -69,7 +69,7 @@ class TheMovieDb(MovieProvider):
     def search(self, q, limit = 3):
         """ Find movie by name """
 
-        if self.isDisabled():
+        if self.isSearchDisabled():
             return False
 
         log.debug('Searching for movie: %s', q)
@@ -111,6 +111,8 @@ class TheMovieDb(MovieProvider):
     def getInfo(self, identifier = None, extended = True, **kwargs):
 
         if not identifier:
+            return {}
+        if self.isInfoDisabled():
             return {}
 
         result = self.parseMovie({
@@ -317,16 +319,34 @@ class TheMovieDb(MovieProvider):
 
 config = [{
     'name': 'themoviedb',
+    'order': 10,
     'groups': [
         {
-            'tab': 'providers',
+            'tab': 'databases',
             'name': 'tmdb',
             'label': 'TheMovieDB',
-            'hidden': True,
             'description': 'Used for all calls to TheMovieDB.',
             'options': [
                 {
+                    'name': 'enabled',
+                    'type': 'enabler',
+                    'default': True,
+                },
+                {
+                    'name': 'search_enabled',
+                    'label': 'Enabled for movie search',
+                    'type': 'bool',
+                    'default': True,
+                },
+                {
+                    'name': 'info_enabled',
+                    'label': 'Enabled for movie info download',
+                    'type': 'bool',
+                    'default': True,
+                },
+                {
                     'name': 'api_key',
+                    'advanced': True,
                     'default': '',
                     'label': 'Api Key',
                 },

@@ -64,6 +64,10 @@ class CouchPotatoApi(MovieProvider):
         }), headers = self.getRequestHeaders())
 
     def search(self, q, limit = 5):
+        
+        if self.isSearchDisabled():
+            return []
+
         return self.getJsonData(self.urls['search'] % tryUrlencode(q) + ('?limit=%s' % limit), headers = self.getRequestHeaders())
 
     def validate(self, name = None):
@@ -92,6 +96,8 @@ class CouchPotatoApi(MovieProvider):
 
         if not identifier:
             return
+        if self.isInfoDisabled():
+            return {}
 
         url = self.urls['info'] % identifier
         url += '' if adding else '?ignore=1'
@@ -129,3 +135,36 @@ class CouchPotatoApi(MovieProvider):
             'X-CP-Time': time.time(),
             'X-CP-Identifier': '+%s' % Env.setting('api_key', 'core')[:10],  # Use first 10 as identifier, so we don't need to use IP address in api stats
         }
+
+config = [{
+    'name': 'couchpotatoapi',
+    'order': 10,
+    'groups': [
+        {
+            'tab': 'databases',
+            'name': 'couchpotatoapi',
+            'label': 'CouchPotato API',
+            'description': 'Used for all calls to CouchPotato API.',
+            'options': [
+                {
+                    'name': 'enabled',
+                    'type': 'enabler',
+                    'default': True,
+                },
+                {
+                    'name': 'search_enabled',
+                    'label': 'Enabled for movie search',
+                    'type': 'bool',
+                    'default': True,
+                },
+                {
+                    'name': 'info_enabled',
+                    'label': 'Enabled for movie info download',
+                    'type': 'bool',
+                    'default': True,
+                },
+            ],
+        },
+    ],
+}]
+

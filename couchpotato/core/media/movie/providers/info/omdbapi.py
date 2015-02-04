@@ -31,6 +31,9 @@ class OMDBAPI(MovieProvider):
 
     def search(self, q, limit = 12):
 
+        if self.isSearchDisabled():
+            return []
+
         name_year = fireEvent('scanner.name_year', q, single = True)
 
         if not name_year or (name_year and not name_year.get('name')):
@@ -55,6 +58,8 @@ class OMDBAPI(MovieProvider):
     def getInfo(self, identifier = None, **kwargs):
 
         if not identifier:
+            return {}
+        if self.isInfoDisabled():
             return {}
 
         cache_key = 'omdbapi.cache.%s' % identifier
@@ -132,3 +137,36 @@ class OMDBAPI(MovieProvider):
             runtime += tryInt(nr) * (60 if 'h' is str(size)[0] else 1)
 
         return runtime
+
+config = [{
+    'name': 'omdbapi',
+    'order': 10,
+    'groups': [
+        {
+            'tab': 'databases',
+            'name': 'omdb',
+            'label': 'Open Media Database',
+            'description': 'Used for all calls to OMDB.',
+            'options': [
+                {
+                    'name': 'enabled',
+                    'type': 'enabler',
+                    'default': True,
+                },
+                {
+                    'name': 'search_enabled',
+                    'label': 'Enabled for movie search',
+                    'type': 'bool',
+                    'default': True,
+                },
+                {
+                    'name': 'info_enabled',
+                    'label': 'Enabled for movie info download',
+                    'type': 'bool',
+                    'default': True,
+                },
+            ],
+        },
+    ],
+}]
+
