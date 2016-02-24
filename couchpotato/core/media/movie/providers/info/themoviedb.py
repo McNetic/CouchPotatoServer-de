@@ -264,7 +264,7 @@ class TheMovieDb(MovieProvider):
                         break
             if lang_fallback:
                 try:
-                    url = 'http://api.themoviedb.org/3/%s?api_key=%s&language=%s%s' % (call, self.conf('api_key'), 'en', '&%s' % params if params else '')
+                    url = 'https://api.themoviedb.org/3/%s?api_key=%s&language=%s%s' % (call, self.conf('api_key'), 'en', '&%s' % params if params else '')
                     fallback_data = self.getJsonData(url, show_error = False)
                     for key, value in data.items():
                       if None == value:
