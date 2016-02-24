@@ -244,10 +244,11 @@ class TheMovieDb(MovieProvider):
     def request(self, call = '', params = {}, return_key = None):
 
         params = dict((k, v) for k, v in params.items() if v)
+        params['language'] = self.language
         params = tryUrlencode(params)
 
         try:
-            url = 'https://api.themoviedb.org/3/%s?api_key=%s&language=%s%s' % (call, self.getApiKey(), self.language, '&%s' % params if params else '')
+            url = 'https://api.themoviedb.org/3/%s?api_key=%s%s' % (call, self.getApiKey(), '&%s' % params if params else '')
             data = self.getJsonData(url, show_error = False)
         except:
             log.debug('Movie not found: %s, %s', (call, params))
@@ -264,7 +265,8 @@ class TheMovieDb(MovieProvider):
                         break
             if lang_fallback:
                 try:
-                    url = 'https://api.themoviedb.org/3/%s?api_key=%s&language=%s%s' % (call, self.conf('api_key'), 'en', '&%s' % params if params else '')
+                    params['language'] = 'en'
+                    url = 'https://api.themoviedb.org/3/%s?api_key=%s%s' % (call, self.conf('api_key'), '&%s' % params if params else '')
                     fallback_data = self.getJsonData(url, show_error = False)
                     for key, value in data.items():
                       if None == value:
